@@ -1,7 +1,10 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import time
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 
 url = "https://www.cnbc.com/world/?region=world"
 
@@ -10,7 +13,15 @@ options.add_argument("--headless")
 driver = webdriver.Chrome(options=options)
 
 driver.get(url)
-time.sleep(5)
+while True:
+    try:
+        view_more_btn = WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button.LatestNews-button"))
+        )
+        view_more_btn.click()
+        time.sleep(2)
+    except:
+        break
 
 html = driver.page_source
 soup = BeautifulSoup(html, "html.parser")
